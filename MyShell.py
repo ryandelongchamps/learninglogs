@@ -10,3 +10,8 @@ topics = Topic.objects.all()
 
 for topic in topics:
     print(topic.id, topic)
+
+from django.contrib.auth.models import User
+
+for user in User.objects.all():
+    print(user.username, user.id)
