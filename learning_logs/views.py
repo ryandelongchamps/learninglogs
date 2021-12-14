@@ -1,4 +1,3 @@
-from django.http.response import Http404
 from django.shortcuts import render, redirect
 from .models import Topic, Entry
 from .forms import TopicForm, EntryForm
@@ -13,7 +12,7 @@ def index(request):
 def topics(request):
     topics = Topic.objects.filter(owner=request.users.order_by('date_added'))
     context = {'topics':topics}
-    return render(request, 'MainApp/topics.html', context)
+    return render(request, 'learning_logs/topics.html', context)
 
 @login_required
 def topic(request, topic_id):
@@ -24,7 +23,7 @@ def topic(request, topic_id):
     if topic.owner != request.user:
         raise Http404
 
-    return render(request, 'MainApp/topic.html', context)
+    return render(request, 'learning_logs/topic.html', context)
 
 @login_required
 def new_topic(request):
@@ -36,10 +35,10 @@ def new_topic(request):
             new_topic = form.save(commit=False)
             new_topic.owner = request.user
             new_topic.save()
-            return redirect('MainApp:topics')
+            return redirect('learning_logs:topics')
 
     context = {'form':form}
-    return render(request, 'MainApp/new_topic.html',context)
+    return render(request, 'learning_logs/new_topic.html',context)
 
 @login_required
 def new_entry(request, topic_id):
@@ -53,9 +52,9 @@ def new_entry(request, topic_id):
             new_entry.owner = request.user
             new_entry.topic = topic
             new_entry.save()
-            return redirect('MainApp:topic',topic_id=topic_id)
+            return redirect('learning_logs:topic',topic_id=topic_id)
     context = {'form': form,'topic':topic}
-    return render(request, 'MainApp/new_entry.html', context)
+    return render(request, 'learning_logs/new_entry.html', context)
 
 @login_required
 def edit_entry(request,entry_id):
@@ -73,7 +72,7 @@ def edit_entry(request,entry_id):
         form = EntryForm(instance=entry, data=request.POST)
         if form.is_valid():
             form.save()
-            return redirect('MainApp:topic',topic_id=topic.id)
+            return redirect('learning_logs:topic',topic_id=topic.id)
 
     context = {'entry':entry, 'topic':topic, 'form':form}
-    return render(request, 'MainApp/edit_entry.html', context)      
+    return render(request, 'learning_logs/edit_entry.html', context)      
